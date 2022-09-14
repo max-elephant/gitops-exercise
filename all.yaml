@@ -13,47 +13,66 @@ metadata:
   name: max-nginx-configmap
   namespace: max-gitops-exercise
 data:
-  index.html: |
-    Hello from pod number $NUM
+  hello_1: |
+    Hello from pod number 1
+  hello_2: |
+    Hello from pod number 2
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  name: max-nginx-deployment
-  labels:
-    name: max-nginx
+  name: max-nginx-1
   namespace: max-gitops-exercise
+  labels:
+    name: max-nginx-1
+    app: max-nginx
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      name: max-nginx
-  template:
-    metadata:
-      labels:
-        name: max-nginx
-    spec:
-      volumes:
+  volumes:
+    - name: html-volume
+      configMap:
+        name: max-nginx-configmap
+  containers:
+    - name: max-nginx-1
+      image: nginx:stable
+      ports:
+        - containerPort: 80
+          name: http-web-svc
+      volumeMounts:
         - name: html-volume
-          configMap:
-            name: max-nginx-configmap
-      containers:
-      - name: max-nginx
-        image: nginx:stable
-        ports:
-          - containerPort: 80
-            name: http-web-svc
-        env:
-          - name: NUM
-            value: "1"
-        volumeMounts:
-          - name: html-volume
-            mountPath: /usr/share/nginx/html/index.html
-            subPath: index.html
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: hello_1
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: max-nginx-2
+  namespace: max-gitops-exercise
+  labels:
+    name: max-nginx-2
+    app: max-nginx
+spec:
+  volumes:
+    - name: html-volume
+      configMap:
+        name: max-nginx-configmap
+  containers:
+    - name: max-nginx-2
+      image: nginx:stable
+      ports:
+        - containerPort: 80
+          name: http-web-svc
+      volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: hello_2
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
@@ -62,7 +81,37 @@ metadata:
   namespace: max-gitops-exercise
 spec:
   selector:
-    name: max-nginx
+    app: max-nginx
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: http-web-svc
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: max-nginx-service-1
+  namespace: max-gitops-exercise
+spec:
+  selector:
+    name: max-nginx-1
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: http-web-svc
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: max-nginx-service-2
+  namespace: max-gitops-exercise
+spec:
+  selector:
+    name: max-nginx-2
   ports:
   - name: http
     protocol: TCP
@@ -79,10 +128,44 @@ spec:
   gateways:
   - istio-ingress/platform-ingress-gateway
   hosts:
-  - hello-exercise-1.platform.ele.dev
+  - hello-exercise.platform.ele.dev
   http:
   - route:
     - destination:
         host: max-nginx-service
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-ingress-max-gitops-vs-1
+  namespace: max-gitops-exercise
+spec:
+  gateways:
+  - istio-ingress/platform-ingress-gateway
+  hosts:
+  - hello-exercise-1.platform.ele.dev
+  http:
+  - route:
+    - destination:
+        host: max-nginx-service-1
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-ingress-max-gitops-vs-2
+  namespace: max-gitops-exercise
+spec:
+  gateways:
+  - istio-ingress/platform-ingress-gateway
+  hosts:
+  - hello-exercise-2.platform.ele.dev
+  http:
+  - route:
+    - destination:
+        host: max-nginx-service-2
         port:
           number: 80
