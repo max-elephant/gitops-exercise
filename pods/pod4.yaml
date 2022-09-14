@@ -21,7 +21,7 @@ spec:
       volumeMounts:
         - name: html-volume
           mountPath: /usr/share/nginx/html/index.html
-          subPath: hello_4
+          subPath: hello-4
       resources:
         limits:
           memory: "128Mi"
