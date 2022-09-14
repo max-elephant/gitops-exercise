@@ -7,6 +7,15 @@ metadata:
     name: max-gitops-exercise
   name: max-gitops-exercise
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: max-nginx-configmap
+  namespace: max-gitops-exercise
+data:
+  index.html: |
+    Hello from pod number $NUM
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,12 +33,23 @@ spec:
       labels:
         name: max-nginx
     spec:
+      volumes:
+        - name: html-volume
+          configMap:
+            name: max-nginx-configmap
       containers:
       - name: max-nginx
         image: nginx:stable
         ports:
           - containerPort: 80
             name: http-web-svc
+        env:
+          - name: NUM
+            value: "1"
+        volumeMounts:
+          - name: html-volume
+            mountPath: /usr/share/nginx/html/index.html
+            subPath: index.html
         resources:
           limits:
             memory: "128Mi"
