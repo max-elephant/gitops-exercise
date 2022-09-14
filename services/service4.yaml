@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: max-nginx-service-4
+  namespace: max-gitops-exercise
+spec:
+  selector:
+    name: max-nginx-4
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: http-web-svc
+  type: ClusterIP

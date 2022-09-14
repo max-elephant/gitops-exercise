@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: max-nginx-2
+  namespace: max-gitops-exercise
+  labels:
+    name: max-nginx-2
+    app: max-nginx
+spec:
+  volumes:
+    - name: html-volume
+      configMap:
+        name: max-nginx-configmap
+  containers:
+    - name: max-nginx-2
+      image: nginx:stable
+      ports:
+        - containerPort: 80
+          name: http-web-svc
+      volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: hello_2
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"

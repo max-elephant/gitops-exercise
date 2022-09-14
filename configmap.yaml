@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: max-nginx-configmap
+  namespace: max-gitops-exercise
+data:
+  hello_1: |
+    Hello from pod number 1
+  hello_2: |
+    Hello from pod number 2
+  hello_3: |
+    Hello from pod number 3
+  hello_4: |
+    Hello from pod number 4
+  hello_5: |
+    Hello from pod number 5
