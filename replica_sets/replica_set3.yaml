@@ -1,0 +1,40 @@
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: max-nginx-rs-3
+  namespace: max-gitops-exercise
+  labels:
+    name: max-nginx-rs-3
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  selector:
+    matchLabels:
+      name: max-nginx-3
+  template:
+    metadata:
+      name: max-nginx-3
+      labels:
+        name: max-nginx-3
+        app: max-nginx
+    spec:
+      volumes:
+        - name: html-volume
+          configMap:
+            name: max-nginx-configmap
+      containers:
+        - name: max-nginx-3
+          image: nginx:stable
+          ports:
+            - containerPort: 80
+              name: http-web-svc
+          volumeMounts:
+            - name: html-volume
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: hello-3
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
