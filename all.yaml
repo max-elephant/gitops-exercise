@@ -7,24 +7,33 @@ metadata:
     name: max-gitops-exercise
   name: max-gitops-exercise
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: max-nginx
+  name: max-nginx-deployment
   labels:
     name: max-nginx
   namespace: max-gitops-exercise
 spec:
-  containers:
-  - name: max-nginx
-    image: nginx:stable
-    ports:
-      - containerPort: 80
-        name: http-web-svc
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
+  replicas: 2
+  selector:
+    matchLabels:
+      name: max-nginx
+  template:
+    metadata:
+      labels:
+        name: max-nginx
+    spec:
+      containers:
+      - name: max-nginx
+        image: nginx:stable
+        ports:
+          - containerPort: 80
+            name: http-web-svc
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
