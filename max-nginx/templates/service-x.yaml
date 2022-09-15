@@ -1,0 +1,17 @@
+{{- range $.Values.items }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Chart.Name }}-service-{{ . }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  selector:
+    name: {{ $.Chart.Name }}-{{ . }}
+  ports:
+  - name: http
+    protocol: TCP
+    port: {{ $.Values.port }}
+    targetPort: {{ $.Chart.Name }}-port
+  type: ClusterIP
+{{- end }}

@@ -1,0 +1,38 @@
+{{- range $.Values.items }}
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: {{ $.Chart.Name }}-rs-{{ . }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ $.Chart.Name }}-rs-{{ . }}
+spec:
+  # modify replicas according to your case
+  replicas: {{ $.Values.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ $.Chart.Name }}-{{ . }}
+  template:
+    metadata:
+      name: {{ $.Chart.Name }}-{{ . }}
+      labels:
+        name: {{ $.Chart.Name }}-{{ . }}
+        app: {{ $.Chart.Name }}-app
+    spec:
+      volumes:
+        - name: html-volume
+          configMap:
+            name: {{ $.Chart.Name }}-configmap
+      containers:
+        - name: {{ $.Chart.Name }}-{{ . }}
+          image: {{ $.Values.image }}
+          ports:
+            - containerPort: {{ $.Values.port }}
+              name: {{ $.Chart.Name }}-port
+          volumeMounts:
+            - name: html-volume
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: {{ $.Values.configMapData }}-{{ . }}
+          resources: {{ toYaml $.Values.resources | nindent 12 }}
+{{- end }}
