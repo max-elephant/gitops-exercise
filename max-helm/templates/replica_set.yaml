@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: {{ $.Chart.Name }}-rs
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ $.Chart.Name }}-rs
+spec:
+  # modify replicas according to your case
+  replicas: {{ $.Values.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ $.Chart.Name }}
+  template:
+    metadata:
+      name: {{ $.Chart.Name }}
+      labels:
+        name: {{ $.Chart.Name }}
+    spec:
+      volumes:
+        - name: {{ $.Values.volumeName }}
+          configMap:
+            name: {{ $.Chart.Name }}-configmap
+      containers:
+        - name: {{ $.Chart.Name }}
+          image: {{ $.Values.image }}
+          env: {{ toYaml $.Values.env | nindent 12 }}
+          ports:
+            - containerPort: {{ $.Values.port }}
+              name: {{ $.Chart.Name }}-port
+          volumeMounts:
+            - name: {{ $.Values.volumeName }}
+              mountPath: {{ $.Values.mountPath }}
+              subPath: {{ $.Values.configMapData }}
+          resources: {{ toYaml $.Values.resources | nindent 12 }}

@@ -4,7 +4,5 @@ metadata:
   name: {{ .Chart.Name }}-configmap
   namespace: {{ .Values.namespace }}
 data:
-  {{- range $.Values.items }}
-  {{ $.Values.configMapData }}-{{ . }}: |
-    Hello from pod number {{ . }}
-  {{- end }}
+  {{ $.Values.configMapData }}: |
+    <?php echo $_ENV["MY_POD_NAME"]; ?>
