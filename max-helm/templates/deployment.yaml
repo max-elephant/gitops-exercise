@@ -1,11 +1,11 @@
 ---
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
-  name: {{ $.Chart.Name }}-rs
+  name: {{ $.Chart.Name }}-dep
   namespace: {{ $.Values.namespace }}
   labels:
-    name: {{ $.Chart.Name }}-rs
+    name: {{ $.Chart.Name }}-dep
 spec:
   # modify replicas according to your case
   replicas: {{ $.Values.replicaCount }}
