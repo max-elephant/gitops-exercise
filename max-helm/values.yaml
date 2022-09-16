@@ -9,7 +9,7 @@ configMapData: max-helm-cm-data
 volumeName: html-volume
 mountPath: /var/www/html/index.php
 
-host: hello-exercise.platform.ele.dev
+# host: hello-exercise.platform.ele.dev
 
 port: 80
 
