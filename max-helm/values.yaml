@@ -16,10 +16,14 @@ port: 80
 image: php:8-apache-bullseye
 
 env:
-  - name: MY_POD_NAME
+  - name: POD_NAME
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
+  - name: ENVIRONMENT
+    valueFrom:
+      fieldRef:
+        fieldPath: {{ .Values.environment }}
 
 resources:
   limits:
