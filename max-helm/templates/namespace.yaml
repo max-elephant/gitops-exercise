@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: {{ .Values.namespace }}
   labels:
     istio-injection: enabled
-    name: max-gitops-exercise
-  name: max-gitops-exercise
+    name: {{ .Values.namespace }}

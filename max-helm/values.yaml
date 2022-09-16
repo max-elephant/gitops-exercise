@@ -1,0 +1,37 @@
+# Default values for max-nginx.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 5
+namespace: max-gitops-exercise-helm
+
+configMapData: max-helm-cm-data
+volumeName: html-volume
+mountPath: /var/www/html/index.php
+
+host: hello-exercise.platform.ele.dev
+
+port: 80
+
+image: php:8-apache-bullseye
+
+env:
+  - name: MY_POD_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80

@@ -2,16 +2,16 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: istio-ingress-max-gitops-vs-1
-  namespace: max-gitops-exercise
+  name: {{ $.Chart.Name }}-vs
+  namespace: {{ $.Values.namespace }}
 spec:
   gateways:
   - istio-ingress/platform-ingress-gateway
   hosts:
-  - hello-exercise-1.platform.ele.dev
+  - {{ $.Values.host }}
   http:
   - route:
     - destination:
-        host: max-nginx-service-1
+        host: {{ $.Chart.Name }}-service
         port:
           number: 80
