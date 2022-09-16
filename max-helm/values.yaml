@@ -23,7 +23,7 @@ env:
   - name: ENVIRONMENT
     valueFrom:
       fieldRef:
-        fieldPath: {{ .Values.environment }}
+        fieldPath: "{{ .Values.environment }}"
 
 resources:
   limits:
