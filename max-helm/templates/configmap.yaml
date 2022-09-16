@@ -5,4 +5,4 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   {{ $.Values.configMapData }}: |
-    <?php echo "Hello from pod " . $_ENV["POD_NAME"] . " in environment " . $_ENV["ENVIRONMENT"]; ?>
+    <?php echo "Hello from pod " . $_ENV["POD_NAME"] . " in environment " . "{{ .Values.environment }}"; ?>

@@ -20,10 +20,6 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
-  - name: ENVIRONMENT
-    valueFrom:
-      fieldRef:
-        fieldPath: "{{ .Values.environment }}"
 
 resources:
   limits:
